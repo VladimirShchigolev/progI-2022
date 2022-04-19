@@ -1,9 +1,9 @@
 import tkinter
-from tkinter import Toplevel, Label, Entry, StringVar, IntVar, Button, messagebox
+from tkinter import Toplevel, Label, Entry, StringVar, Button
 
 from sqlalchemy.orm import Session
 
-from src.models.models import Product
+from src.widgets.products.product_edit_window import ProductEditWindow
 
 
 class ProductViewWindow(Toplevel):
@@ -45,13 +45,17 @@ class ProductViewWindow(Toplevel):
         self.price_entry.grid(row=2, column=1)
         self.amount_entry.grid(row=3, column=1)
 
+        self.edit_button = Button(self, text="Edit", width=20,
+                                  command=self.open_product_edit_window)
+
         self.delete_button = Button(self, text="Delete", width=20,
                                     command=self.delete_product)
 
         self.back_button = Button(self, text="Back", width=20,
                                   command=self.close)
 
-        self.delete_button.grid(row=4, column=0)
+        self.edit_button.grid(row=4, column=0)
+        self.delete_button.grid(row=5, column=0)
         self.back_button.grid(row=4, column=1)
 
     def delete_product(self):
@@ -59,7 +63,13 @@ class ProductViewWindow(Toplevel):
             session.delete(self.product)
             session.commit()
 
+        self.master.update_product_list()
         self.close()
+
+    def open_product_edit_window(self):
+        window = ProductEditWindow(self.db_engine, self.product, self.master)
+        self.close()
+        window.mainloop()
 
     def close(self):
         self.destroy()
