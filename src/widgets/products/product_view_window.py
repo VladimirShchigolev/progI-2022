@@ -1,3 +1,4 @@
+import tkinter
 from tkinter import Toplevel, Label, Entry, StringVar, IntVar, Button, messagebox
 
 from sqlalchemy.orm import Session
@@ -26,15 +27,15 @@ class ProductViewWindow(Toplevel):
 
         self.name_text = StringVar()
         self.name_text.set(self.product.name)
-        self.name_entry = Entry(self, textvariable=self.name_text, width=50)
+        self.name_entry = Entry(self, state=tkinter.DISABLED, textvariable=self.name_text, width=50)
 
         self.price_text = StringVar()
         self.price_text.set(str(self.product.price))
-        self.price_entry = Entry(self, textvariable=self.price_text, width=50)
+        self.price_entry = Entry(self, state=tkinter.DISABLED, textvariable=self.price_text, width=50)
 
         self.amount_text = StringVar()
         self.amount_text.set(str(self.product.amount))
-        self.amount_entry = Entry(self, textvariable=self.amount_text, width=50)
+        self.amount_entry = Entry(self, state=tkinter.DISABLED, textvariable=self.amount_text, width=50)
 
         self.name_label.grid(row=1, column=0)
         self.price_label.grid(row=2, column=0)
@@ -44,10 +45,21 @@ class ProductViewWindow(Toplevel):
         self.price_entry.grid(row=2, column=1)
         self.amount_entry.grid(row=3, column=1)
 
+        self.delete_button = Button(self, text="Delete", width=20,
+                                    command=self.delete_product)
+
         self.back_button = Button(self, text="Back", width=20,
                                   command=self.close)
 
+        self.delete_button.grid(row=4, column=0)
         self.back_button.grid(row=4, column=1)
+
+    def delete_product(self):
+        with Session(self.db_engine) as session:
+            session.delete(self.product)
+            session.commit()
+
+        self.close()
 
     def close(self):
         self.destroy()
