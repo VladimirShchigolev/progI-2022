@@ -68,4 +68,4 @@ class ProductCreateWindow(Toplevel):
 
     def close(self):
         self.destroy()
-        self.update()
+        self.quit()

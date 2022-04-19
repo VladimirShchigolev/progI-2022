@@ -51,12 +51,11 @@ class Product(Base):
 
         return True
 
-
-
-
     def __repr__(self):
         return f"Product(id={self.id!r}, name={self.name!r}, price={self.price!r})"
 
+    def __str__(self):
+        return f"{self.name}, {self.price}"
 
 class Order(Base):
     __tablename__ = "orders"
